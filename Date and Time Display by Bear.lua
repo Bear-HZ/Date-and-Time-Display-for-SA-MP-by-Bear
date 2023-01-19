@@ -36,8 +36,8 @@ else
 	config_table = {
 		Options = {
 			isDTDDisabled = false,
-			position_horizontalOffset = 0.9,
-			position_verticalOffset = 0.25
+			position_horizontalOffset = 900,
+			position_verticalOffset = 250
 		}
 	}
 
