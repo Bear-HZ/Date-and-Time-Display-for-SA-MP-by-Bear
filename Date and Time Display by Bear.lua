@@ -66,12 +66,14 @@ local function makeTextdraws()
 	local window_resX, window_resY = getScreenResolution()
 	local game_resX, game_resY = convertWindowScreenCoordsToGameScreenCoords(window_resX, window_resY)
 	
+	-- Hour and minute
 	sampTextdrawCreate(1313, os.date("%H:%M"), game_resX * config_table.Options.position_horizontalOffset / 1000, game_resY * config_table.Options.position_verticalOffset / 1000)
 	sampTextdrawSetStyle(1313, 2)
 	sampTextdrawSetAlign(1313, 2)
 	sampTextdrawSetLetterSizeAndColor(1313, textSize / 2, textSize * 2, 0xFFFFFFFF)
 	sampTextdrawSetBoxColorAndSize(1313, 1, 0x50000000, 0, game_resY * textSize / 5.5)
 	
+	-- Day of week, day of month, month of year and the year
 	sampTextdrawCreate(1314, os.date("%a,\t%b\t%d\t%Y"), game_resX * config_table.Options.position_horizontalOffset / 1000, game_resY * config_table.Options.position_verticalOffset / 1000 + (textSize * game_resY * 0.048)) -- 0.048 if textSize is 1; calibrate it yourself for other sizes
 	sampTextdrawSetStyle(1314, 1)
 	sampTextdrawSetAlign(1314, 2)
