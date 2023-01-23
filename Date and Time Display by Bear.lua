@@ -116,7 +116,7 @@ function sampev.onDisplayGameText(_, _, gameText)
 				end
 			end
 			
-			-- As of Jan 2023, the server time seems to be running ~10 seconds past GMT. This adjustment accounts for that.
+			-- As of Jan 2023, the server time seems to be running ~10 seconds ahead of GMT. This adjustment accounts for that.
 			systemToServerTimeOffset = systemToServerTimeOffset + 10
 			
 			if not isServerTimeIntercepted then
