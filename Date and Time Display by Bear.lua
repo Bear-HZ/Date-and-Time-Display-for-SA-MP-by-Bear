@@ -5,8 +5,8 @@
 
 script_name("Date and Time Display by Bear")
 script_author("Bear")
-script_version("0.2.1")
-local script_version = "0.2.1"
+script_version("0.2.2")
+local script_version = "0.2.2"
 
 
 -----------------------------------------------------
@@ -115,6 +115,9 @@ function sampev.onDisplayGameText(_, _, gameText)
 					systemToServerTimeOffset = systemToServerTimeOffset - 60
 				end
 			end
+			
+			-- As of Jan 2023, the server time seems to be running ~10 seconds behind GMT. This adjustment accounts for that.
+			systemToServerTimeOffset = systemToServerTimeOffset + 10
 			
 			if not isServerTimeIntercepted then
 				isServerTimeIntercepted = true
