@@ -5,8 +5,8 @@
 
 script_name("Date and Time Display by Bear")
 script_author("Bear")
-script_version("0.2.0")
-local script_version = "0.2.0"
+script_version("0.2.1")
+local script_version = "0.2.1"
 
 
 -----------------------------------------------------
@@ -56,8 +56,6 @@ end
 local textSize = 1 -- Changing this might cause the 2 textdraws to overlap/separate
 
 local isRedrawNeeded = false
-
-local isCommandResponseAwaited = false
 
 local isServerTimeIntercepted = false
 
