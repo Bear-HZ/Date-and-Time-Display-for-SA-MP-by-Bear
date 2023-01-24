@@ -5,8 +5,8 @@
 
 script_name("Date and Time Display by Bear")
 script_author("Bear")
-script_version("0.2.2")
-local script_version = "0.2.2"
+script_version("0.2.3")
+local script_version = "0.2.3"
 
 
 -----------------------------------------------------
@@ -99,7 +99,7 @@ function sampev.onDisplayGameText(_, _, gameText)
 				end
 			end
 			
-			local serverTime_hour = string.match(gameText:match("~w~%d%d:"), "%d%d")
+			local serverTime_hour = string.match(gameText:match("~w~%d%d?:"), "%d+")
 			
 			local serverTime_minute = string.sub(gameText:match(":%d%d"), 2, 3)
 			
