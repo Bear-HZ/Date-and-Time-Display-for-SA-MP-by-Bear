@@ -5,8 +5,8 @@
 
 script_name("Date and Time Display by Bear")
 script_author("Bear")
-script_version("0.2.3")
-local script_version = "0.2.3"
+script_version("0.3.0")
+local script_version = "0.3.0"
 
 
 -----------------------------------------------------
@@ -142,27 +142,27 @@ local function makeTextdraws()
 	sampTextdrawSetStyle(1313, 2)
 	sampTextdrawSetAlign(1313, 2)
 	sampTextdrawSetLetterSizeAndColor(1313, textSize / 2, textSize * 2, 0xFFFFFFFF)
-	sampTextdrawSetBoxColorAndSize(1313, 1, 0x50000000, 0, game_resY * textSize / 5.5)
+	sampTextdrawSetBoxColorAndSize(1313, 1, 0x50000000, 0, game_resY * textSize / 5.7)
 	
 	-- Day of week, day of month, month of year and the year
 	sampTextdrawCreate(1314, "", game_resX * config_table.Options.position_horizontalOffset / 1000, game_resY * config_table.Options.position_verticalOffset / 1000 + (textSize * game_resY * 0.048)) -- 0.048 if textSize is 1; calibrate it yourself for other sizes
-	sampTextdrawSetStyle(1314, 1)
+	sampTextdrawSetStyle(1314, 2)
 	sampTextdrawSetAlign(1314, 2)
-	sampTextdrawSetLetterSizeAndColor(1314, textSize / 4, textSize, 0xFFFFFFFF)
-	sampTextdrawSetBoxColorAndSize(1314, 1, 0x50000000, 0, game_resY * textSize / 5.5)
+	sampTextdrawSetLetterSizeAndColor(1314, textSize / 5.5, textSize * 4 / 5.5, 0xFFFFFFFF)
+	sampTextdrawSetBoxColorAndSize(1314, 1, 0x50000000, 0, game_resY * textSize / 5.7)
 	
 	-- Source of data (system time or server time)
-	sampTextdrawCreate(1315, "", game_resX * config_table.Options.position_horizontalOffset / 1000, game_resY * config_table.Options.position_verticalOffset / 1000 + (textSize * game_resY * 0.0755)) -- 0.0755 if textSize is 1; calibrate it yourself for other sizes
-	sampTextdrawSetStyle(1315, 1)
+	sampTextdrawCreate(1315, "", game_resX * config_table.Options.position_horizontalOffset / 1000, game_resY * config_table.Options.position_verticalOffset / 1000 + (textSize * game_resY * 0.07)) -- 0.0755 if textSize is 1; calibrate it yourself for other sizes
+	sampTextdrawSetStyle(1315, 2)
 	sampTextdrawSetAlign(1315, 2)
-	sampTextdrawSetLetterSizeAndColor(1315, textSize / 6, textSize / 1.5, 0xFFFFFFFF)
-	sampTextdrawSetBoxColorAndSize(1315, 1, 0x50000000, 0, game_resY * textSize / 5.5)
+	sampTextdrawSetLetterSizeAndColor(1315, textSize / 8, textSize / 2, 0xFFFFFFFF)
+	sampTextdrawSetBoxColorAndSize(1315, 1, 0x50000000, 0, game_resY * textSize / 5.7)
 	
 	if config_table.Options.isDTDTypeSetToSystem then
 		-- Hour and minute
 		sampTextdrawSetString(1313, os.date("%H:%M"))
 		-- Day of week, day of month, month of year and the year
-		sampTextdrawSetString(1314, os.date("%a,\t%b\t%d\t%Y")) -- 0.048 if textSize is 1; calibrate it yourself for other sizes
+		sampTextdrawSetString(1314, os.date("%a,%b %d %Y")) -- 0.048 if textSize is 1; calibrate it yourself for other sizes
 		-- Source of data (system time or server time)
 		sampTextdrawSetString(1315, "System Time") -- 0.0755 if textSize is 1; calibrate it yourself for other sizes
 	else
@@ -192,7 +192,7 @@ local function makeTextdraws()
 		-- Hour and minute
 		sampTextdrawSetString(1313, os.date("%H:%M", os.time() + systemToServerTimeOffset))
 		-- Day of week, day of month, month of year and the year
-		sampTextdrawSetString(1314, os.date("%a,\t%b\t%d\t%Y", os.time() + systemToServerTimeOffset)) -- 0.048 if textSize is 1; calibrate it yourself for other sizes
+		sampTextdrawSetString(1314, os.date("%a,%b %d %Y", os.time() + systemToServerTimeOffset)) -- 0.048 if textSize is 1; calibrate it yourself for other sizes
 		-- Source of data (system time or server time)
 		sampTextdrawSetString(1315, "HZRP Time") -- 0.0755 if textSize is 1; calibrate it yourself for other sizes
 	end
@@ -229,10 +229,10 @@ function main()
 			repeat
 				if config_table.Options.isDTDTypeSetToSystem then
 					sampTextdrawSetString(1313, os.date("%H:%M"))
-					sampTextdrawSetString(1314, os.date("%a,\t%b\t%d\t%Y"))
+					sampTextdrawSetString(1314, os.date("%a,%b %d %Y"))
 				else
 					sampTextdrawSetString(1313, os.date("%H:%M", os.time() + systemToServerTimeOffset))
-					sampTextdrawSetString(1314, os.date("%a,\t%b\t%d\t%Y", os.time() + systemToServerTimeOffset))
+					sampTextdrawSetString(1314, os.date("%a,%b %d %Y", os.time() + systemToServerTimeOffset))
 				end
 				
 				wait(500)
