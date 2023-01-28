@@ -5,8 +5,8 @@
 
 script_name("Date and Time Display by Bear")
 script_author("Bear")
-script_version("0.3.0")
-local script_version = "0.3.0"
+script_version("0.4.0")
+local script_version = "0.4.0"
 
 
 -----------------------------------------------------
@@ -24,25 +24,26 @@ local config_file_path = config_dir_path .. "Date and Time Display by Bear.ini"
 
 config_dir_path = nil
 
-local config_table
+local config
 
 if doesFileExist(config_file_path) then
-	config_table = inicfg.load(nil, config_file_path)
+	config = inicfg.load(nil, config_file_path)
 else
 	local new_config = io.open(config_file_path, "w")
 	new_config:close()
 	new_config = nil
 	
-	config_table = {
+	config = {
 		Options = {
 			isDTDDisabled = false,
-			position_horizontalOffset = 900,
-			position_verticalOffset = 250,
+			position_horizontalOffset = 920,
+			position_verticalOffset = 200,
+			size = 1,
 			isDTDTypeSetToSystem = true
 		}
 	}
 
-	if not inicfg.save(config_table, config_file_path) then
+	if not inicfg.save(config, config_file_path) then
 		sampAddChatMessage("---- {FF88FF}Date and Time Display by Bear: {FFFFFF}Config file creation failed - contact the developer for help.", -1)
 	end
 end
@@ -52,8 +53,6 @@ end
 -- GLOBAL VARIABLES
 -----------------------------------------------------
 
-
-local textSize = 1 -- Changing this might cause the 2 textdraws to overlap/separate
 
 local isRedrawNeeded = false
 
@@ -89,8 +88,8 @@ function sampev.onDisplayGameText(_, _, gameText)
 			else
 				sampAddChatMessage("---- {FF88FF}Date and Time Display by Bear: {FFFFFF}Failure to detect server time's month - contact the developer for help.", -1)
 				
-				config_table.Options.isDTDTypeSetToSystem = true
-				if inicfg.save(config_table, config_file_path) then
+				config.Options.isDTDTypeSetToSystem = true
+				if inicfg.save(config, config_file_path) then
 					sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Showing System Time", -1)
 					return false
 				else
@@ -138,35 +137,30 @@ local function makeTextdraws()
 	local game_resX, game_resY = convertWindowScreenCoordsToGameScreenCoords(window_resX, window_resY)
 	
 	-- Hour and minute
-	sampTextdrawCreate(1313, "", game_resX * config_table.Options.position_horizontalOffset / 1000, game_resY * config_table.Options.position_verticalOffset / 1000)
+	sampTextdrawCreate(1313, "", game_resX * config.Options.position_horizontalOffset / 1000, game_resY * config.Options.position_verticalOffset / 1000)
 	sampTextdrawSetStyle(1313, 2)
 	sampTextdrawSetAlign(1313, 2)
-	sampTextdrawSetLetterSizeAndColor(1313, textSize / 2, textSize * 2, 0xFFFFFFFF)
-	sampTextdrawSetBoxColorAndSize(1313, 1, 0x50000000, 0, game_resY * textSize / 5.7)
+	sampTextdrawSetLetterSizeAndColor(1313, config.Options.size / 2, config.Options.size * 2, 0xFFFFFFFF)
+	sampTextdrawSetBoxColorAndSize(1313, 1, 0x50000000, 0, game_resY * config.Options.size / 5.7)
 	
 	-- Day of week, day of month, month of year and the year
-	sampTextdrawCreate(1314, "", game_resX * config_table.Options.position_horizontalOffset / 1000, game_resY * config_table.Options.position_verticalOffset / 1000 + (textSize * game_resY * 0.048)) -- 0.048 if textSize is 1; calibrate it yourself for other sizes
+	sampTextdrawCreate(1314, "", game_resX * config.Options.position_horizontalOffset / 1000, game_resY * (config.Options.position_verticalOffset + (42 * config.Options.size)) / 1000)
 	sampTextdrawSetStyle(1314, 2)
 	sampTextdrawSetAlign(1314, 2)
-	sampTextdrawSetLetterSizeAndColor(1314, textSize / 5.5, textSize * 4 / 5.5, 0xFFFFFFFF)
-	sampTextdrawSetBoxColorAndSize(1314, 1, 0x50000000, 0, game_resY * textSize / 5.7)
+	sampTextdrawSetLetterSizeAndColor(1314, config.Options.size / 5.5, config.Options.size * 4 / 5.5, 0xFFFFFFFF)
+	sampTextdrawSetBoxColorAndSize(1314, 1, 0x00000000, 0, game_resY * config.Options.size / 5.7)
 	
 	-- Source of data (system time or server time)
-	sampTextdrawCreate(1315, "", game_resX * config_table.Options.position_horizontalOffset / 1000, game_resY * config_table.Options.position_verticalOffset / 1000 + (textSize * game_resY * 0.07)) -- 0.0755 if textSize is 1; calibrate it yourself for other sizes
+	sampTextdrawCreate(1315, "", game_resX * config.Options.position_horizontalOffset / 1000, game_resY * (config.Options.position_verticalOffset + (60 * config.Options.size)) / 1000)
 	sampTextdrawSetStyle(1315, 2)
 	sampTextdrawSetAlign(1315, 2)
-	sampTextdrawSetLetterSizeAndColor(1315, textSize / 8, textSize / 2, 0xFFFFFFFF)
-	sampTextdrawSetBoxColorAndSize(1315, 1, 0x50000000, 0, game_resY * textSize / 5.7)
+	sampTextdrawSetLetterSizeAndColor(1315, config.Options.size / 8, config.Options.size / 2, 0xFFFFFFFF)
+	sampTextdrawSetBoxColorAndSize(1315, 1, 0x00000000, 0, game_resY * config.Options.size / 5.7)
 	
-	if config_table.Options.isDTDTypeSetToSystem then
-		-- Hour and minute
-		sampTextdrawSetString(1313, os.date("%H:%M"))
-		-- Day of week, day of month, month of year and the year
-		sampTextdrawSetString(1314, os.date("%a,%b %d %Y")) -- 0.048 if textSize is 1; calibrate it yourself for other sizes
-		-- Source of data (system time or server time)
-		sampTextdrawSetString(1315, "System Time") -- 0.0755 if textSize is 1; calibrate it yourself for other sizes
+	if config.Options.isDTDTypeSetToSystem then
+		sampTextdrawSetString(1315, "System Time")
 	else
-		sampTextdrawSetString(1313, "--")
+		sampTextdrawSetString(1313, "--~n~~n~")
 		sampTextdrawSetString(1314, "Loading...")
 		sampTextdrawSetString(1315, "--")
 		
@@ -176,25 +170,20 @@ local function makeTextdraws()
 			sampSendChat("/time")
 			
 			for i = 1, 20 do -- ~2 second loop
-				if isServerTimeIntercepted or config_table.Options.isDTDTypeSetToSystem then
+				if isServerTimeIntercepted or config.Options.isDTDTypeSetToSystem then
 					break
 				end
 				
 				wait(100)
 			end
-		until isServerTimeIntercepted or config_table.Options.isDTDTypeSetToSystem
+		until isServerTimeIntercepted or config.Options.isDTDTypeSetToSystem
 		
-		if config_table.Options.isDTDTypeSetToSystem then -- if a loop was exited due to DTD type change
+		if config.Options.isDTDTypeSetToSystem then -- if a loop was exited due to DTD type change
 			makeTextdraws()
 			return
 		end
 		
-		-- Hour and minute
-		sampTextdrawSetString(1313, os.date("%H:%M", os.time() + systemToServerTimeOffset))
-		-- Day of week, day of month, month of year and the year
-		sampTextdrawSetString(1314, os.date("%a,%b %d %Y", os.time() + systemToServerTimeOffset)) -- 0.048 if textSize is 1; calibrate it yourself for other sizes
-		-- Source of data (system time or server time)
-		sampTextdrawSetString(1315, "HZRP Time") -- 0.0755 if textSize is 1; calibrate it yourself for other sizes
+		sampTextdrawSetString(1315, "HZRP Time")
 	end
 end
 
@@ -216,30 +205,31 @@ function main()
 	
 	sampRegisterChatCommand("dtd", cmd_dtd)
 	sampRegisterChatCommand("movedtd", cmd_movedtd)
-	sampRegisterChatCommand("dtdhelp", cmd_dtdhelp)
+	sampRegisterChatCommand("dtdsize", cmd_dtdsize)
 	sampRegisterChatCommand("dtdtype", cmd_dtdtype)
+	sampRegisterChatCommand("dtdhelp", cmd_dtdhelp)
 	
 	while true do
-		while config_table.Options.isDTDDisabled do wait(100) end
+		while config.Options.isDTDDisabled do wait(100) end
 		
 		
 		repeat
 			makeTextdraws()
 			
 			repeat
-				if config_table.Options.isDTDTypeSetToSystem then
-					sampTextdrawSetString(1313, os.date("%H:%M"))
+				if config.Options.isDTDTypeSetToSystem then
+					sampTextdrawSetString(1313, os.date("%H:%M~n~~n~"))
 					sampTextdrawSetString(1314, os.date("%a,%b %d %Y"))
 				else
-					sampTextdrawSetString(1313, os.date("%H:%M", os.time() + systemToServerTimeOffset))
+					sampTextdrawSetString(1313, os.date("%H:%M~n~~n~", os.time() + systemToServerTimeOffset))
 					sampTextdrawSetString(1314, os.date("%a,%b %d %Y", os.time() + systemToServerTimeOffset))
 				end
 				
 				wait(500)
-			until isRedrawNeeded or config_table.Options.isDTDDisabled
+			until isRedrawNeeded or config.Options.isDTDDisabled
 		
 			if isRedrawNeeded then isRedrawNeeded = false end
-		until config_table.Options.isDTDDisabled
+		until config.Options.isDTDDisabled
 		
 		sampTextdrawDelete(1313)
 		sampTextdrawDelete(1314)
@@ -254,16 +244,16 @@ end
 
 
 function cmd_dtd()
-	if config_table.Options.isDTDDisabled then
-		config_table.Options.isDTDDisabled = false
-		if inicfg.save(config_table, config_file_path) then
+	if config.Options.isDTDDisabled then
+		config.Options.isDTDDisabled = false
+		if inicfg.save(config, config_file_path) then
 			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}On", -1)
 		else
 			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Display toggle in config failed - contact the developer for help.", -1)
 		end
 	else
-		config_table.Options.isDTDDisabled = true
-		if inicfg.save(config_table, config_file_path) then
+		config.Options.isDTDDisabled = true
+		if inicfg.save(config, config_file_path) then
 			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Off", -1)
 		else
 			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Display toggle in config failed - contact the developer for help.", -1)
@@ -272,10 +262,10 @@ function cmd_dtd()
 end
 
 function cmd_dtdtype()
-	if config_table.Options.isDTDTypeSetToSystem then
+	if config.Options.isDTDTypeSetToSystem then
 		if string.find(sampGetCurrentServerName(), "Horizon Roleplay") then
-			config_table.Options.isDTDTypeSetToSystem = false
-			if inicfg.save(config_table, config_file_path) then
+			config.Options.isDTDTypeSetToSystem = false
+			if inicfg.save(config, config_file_path) then
 				sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Showing Server Time", -1)
 				isRedrawNeeded = true
 			else
@@ -285,8 +275,8 @@ function cmd_dtdtype()
 			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Connect to Horizon Roleplay for server time.", -1)
 		end
 	else
-		config_table.Options.isDTDTypeSetToSystem = true
-		if inicfg.save(config_table, config_file_path) then
+		config.Options.isDTDTypeSetToSystem = true
+		if inicfg.save(config, config_file_path) then
 			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Showing System Time", -1)
 			isRedrawNeeded = true
 		else
@@ -311,11 +301,11 @@ function cmd_movedtd(args)
 		0 <= arg_horizontalOffset and arg_horizontalOffset <= 1000
 		and 0 <= arg_verticalOffset and arg_verticalOffset <= 1000
 		then
-			config_table.Options.position_horizontalOffset = arg_horizontalOffset
-			config_table.Options.position_verticalOffset = arg_verticalOffset
+			config.Options.position_horizontalOffset = arg_horizontalOffset
+			config.Options.position_verticalOffset = arg_verticalOffset
 			
-			if inicfg.save(config_table, config_file_path) then
-				sampAddChatMessage("--- {FF88FF}Updated Position: {FFFFFF} " .. config_table.Options.position_horizontalOffset .. ", " .. config_table.Options.position_verticalOffset, -1)
+			if inicfg.save(config, config_file_path) then
+				sampAddChatMessage("--- {FF88FF}Updated Position: {FFFFFF} " .. config.Options.position_horizontalOffset .. ", " .. config.Options.position_verticalOffset, -1)
 				isRedrawNeeded = true
 			else
 				sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Display position adjustment in config failed - contact the developer for help.", -1)
@@ -332,6 +322,30 @@ function cmd_movedtd(args)
 		sampAddChatMessage("/movedtd (horizontal offset) (vertical offset)", -1)
 		sampAddChatMessage("Both offsets should range from 0 to 1000.", -1)
 		sampAddChatMessage("{FF88FF}Default: {FFFFFF}/movedtd 900 250", -1)
+		sampAddChatMessage(" ", -1)
+	end
+end
+
+function cmd_dtdsize(args)
+	if #args == 0 or not args:find("[^%s]") then
+		sampAddChatMessage(" ", -1)
+		sampAddChatMessage("{FF88FF}Usage: {FFFFFF}/dtdsize (5-20)", -1)
+		sampAddChatMessage("{FF88FF}Default: {FFFFFF}/dtdsize 10", -1)
+		sampAddChatMessage(" ", -1)
+	elseif args:find("^%d+$") and tonumber(args:match("%d+")) > 4 and tonumber(args:match("%d+")) < 21 then
+		config.Options.size = tonumber(args:match("%d+")) / 10
+		
+		if inicfg.save(config, config_file_path) then
+			sampAddChatMessage("--- {FF88FF}Updated Size: {FFFFFF} " .. tostring(config.Options.size * 10), -1)
+			isRedrawNeeded = true
+		else
+			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Display size adjustment in config failed - contact the developer for help.", -1)
+		end
+	else
+		sampAddChatMessage(" ", -1)
+		sampAddChatMessage("--- {FF6666}Invalid Entry", -1)
+		sampAddChatMessage("{FF88FF}Usage: {FFFFFF}/dtdsize (5-20)", -1)
+		sampAddChatMessage("{FF88FF}Default: {FFFFFF}/dtdsize 10", -1)
 		sampAddChatMessage(" ", -1)
 	end
 end
