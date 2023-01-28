@@ -5,8 +5,8 @@
 
 script_name("Date and Time Display by Bear")
 script_author("Bear")
-script_version("0.4.1")
-local script_version = "0.4.1"
+script_version("0.4.2")
+local script_version = "0.4.2"
 
 
 -----------------------------------------------------
@@ -94,7 +94,6 @@ function sampev.onDisplayGameText(_, _, gameText)
 					return false
 				else
 					sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Display type toggle in config failed - contact the developer for help.", -1)
-					thisscript():unload()
 				end
 			end
 			
