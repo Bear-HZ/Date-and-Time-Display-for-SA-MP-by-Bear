@@ -5,8 +5,8 @@
 
 script_name("Date and Time Display by Bear")
 script_author("Bear")
-script_version("0.4.0")
-local script_version = "0.4.0"
+script_version("0.4.1")
+local script_version = "0.4.1"
 
 
 -----------------------------------------------------
@@ -151,7 +151,7 @@ local function makeTextdraws()
 	sampTextdrawSetBoxColorAndSize(1314, 1, 0x00000000, 0, game_resY * config.Options.size / 5.7)
 	
 	-- Source of data (system time or server time)
-	sampTextdrawCreate(1315, "", game_resX * config.Options.position_horizontalOffset / 1000, game_resY * (config.Options.position_verticalOffset + (60 * config.Options.size)) / 1000)
+	sampTextdrawCreate(1315, "", game_resX * config.Options.position_horizontalOffset / 1000, game_resY * (config.Options.position_verticalOffset + (61 * config.Options.size)) / 1000)
 	sampTextdrawSetStyle(1315, 2)
 	sampTextdrawSetAlign(1315, 2)
 	sampTextdrawSetLetterSizeAndColor(1315, config.Options.size / 8, config.Options.size / 2, 0xFFFFFFFF)
