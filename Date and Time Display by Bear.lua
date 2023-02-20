@@ -5,8 +5,8 @@
 
 script_name("Date and Time Display by Bear")
 script_author("Bear")
-script_version("0.4.2")
-local script_version = "0.4.2"
+script_version("0.4.3")
+local script_version = "0.4.3"
 
 
 -----------------------------------------------------
@@ -140,7 +140,7 @@ local function makeTextdraws()
 	sampTextdrawSetStyle(1313, 2)
 	sampTextdrawSetAlign(1313, 2)
 	sampTextdrawSetLetterSizeAndColor(1313, config.Options.size / 2, config.Options.size * 2, 0xFFFFFFFF)
-	sampTextdrawSetBoxColorAndSize(1313, 1, 0x50000000, 0, game_resY * config.Options.size / 5.7)
+	sampTextdrawSetBoxColorAndSize(1313, 1, 0xA0000000, 0, game_resY * config.Options.size / 5.7)
 	
 	-- Day of week, day of month, month of year and the year
 	sampTextdrawCreate(1314, "", game_resX * config.Options.position_horizontalOffset / 1000, game_resY * (config.Options.position_verticalOffset + (42 * config.Options.size)) / 1000)
@@ -211,7 +211,6 @@ function main()
 	while true do
 		while config.Options.isDTDDisabled do wait(100) end
 		
-		
 		repeat
 			makeTextdraws()
 			
@@ -225,7 +224,7 @@ function main()
 				end
 				
 				wait(500)
-			until isRedrawNeeded or config.Options.isDTDDisabled
+			until isRedrawNeeded or config.Options.isDTDDisabled or not sampTextdrawIsExists(1313)
 		
 			if isRedrawNeeded then isRedrawNeeded = false end
 		until config.Options.isDTDDisabled
@@ -243,17 +242,17 @@ end
 
 
 function cmd_dtd()
+	config.Options.isDTDDisabled = not config.Options.isDTDDisabled
+	
 	if config.Options.isDTDDisabled then
-		config.Options.isDTDDisabled = false
 		if inicfg.save(config, config_file_path) then
-			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}On", -1)
+			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Off", -1)
 		else
 			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Display toggle in config failed - contact the developer for help.", -1)
 		end
 	else
-		config.Options.isDTDDisabled = true
 		if inicfg.save(config, config_file_path) then
-			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Off", -1)
+			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}On", -1)
 		else
 			sampAddChatMessage("--- {FF88FF}Date and Time Display: {FFFFFF}Display toggle in config failed - contact the developer for help.", -1)
 		end
