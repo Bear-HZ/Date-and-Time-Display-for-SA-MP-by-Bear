@@ -5,8 +5,8 @@
 
 script_name("Date and Time Display by Bear")
 script_author("Bear")
-script_version("0.4.3")
-local script_version = "0.4.3"
+script_version("0.4.4")
+local script_version = "0.4.4"
 
 
 -----------------------------------------------------
@@ -54,9 +54,7 @@ end
 -----------------------------------------------------
 
 
-local isRedrawNeeded = false
-
-local isServerTimeIntercepted = false
+local isRedrawNeeded, isServerTimeIntercepted, isPlayerMuted = false, false, false
 
 local systemToServerTimeOffset
 
@@ -125,6 +123,14 @@ function sampev.onDisplayGameText(_, _, gameText)
 	end
 end
 
+function sampev.onServerMessage(_, msg_text)
+	if
+	string.find(sampGetCurrentServerName(), "Horizon Roleplay")
+	and string.sub(msg_text, 1, 48) == "You have been muted automatically for spamming. " then
+		isPlayerMuted = true
+	end
+end
+
 
 -----------------------------------------------------
 -- LOCALLY DECLARED FUNCTIONS
@@ -166,6 +172,7 @@ local function makeTextdraws()
 		isServerTimeIntercepted = false
 		
 		repeat
+			while isPlayerMuted do wait(0) end
 			sampSendChat("/time")
 			
 			for i = 1, 20 do -- ~2 second loop
@@ -207,6 +214,14 @@ function main()
 	sampRegisterChatCommand("dtdsize", cmd_dtdsize)
 	sampRegisterChatCommand("dtdtype", cmd_dtdtype)
 	sampRegisterChatCommand("dtdhelp", cmd_dtdhelp)
+	
+	-- An extra thread that initiates a 13-second spam cooldown
+	lua_thread.create(function()
+		while true do
+			wait(200)
+			if isPlayerMuted then wait(13000) isPlayerMuted = false end
+		end
+	end)
 	
 	while true do
 		while config.Options.isDTDDisabled do wait(100) end
